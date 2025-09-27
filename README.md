@@ -6,6 +6,7 @@ It detects possible dropshipping sites by analyzing their shipping or delivery p
 ## Features
 - Detects if a website is running on Shopify.  
 - Displays a warning banner at the top of the page by default
+![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example3.png "Example of default banner")
 - Crawls the **Shipping** or **Delivery** policy page (if available).  
 - Highlights estimated delivery times:
   - ✅ **≤ 7 days** → Likely ships from **Australia** (Green banner). 
