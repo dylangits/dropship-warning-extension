@@ -44,3 +44,5 @@ If you spot bugs, have ideas for improvements, or want to make the code cleaner,
 - Raise an issue with suggestions or problems you find
 
 I’m happy to review and merge changes, and I genuinely welcome feedback from anyone more experienced (or equally vibecoded).
+
+Based on the Chrome Web Store Program Policies, I don't think this would ever be allowed to be published (at least in it's current state) because it could 'decieve or mislead users'
