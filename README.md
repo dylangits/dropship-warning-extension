@@ -32,3 +32,12 @@ It detects possible dropshipping sites by analyzing their shipping or delivery p
 - Not all Shopify stores are dropshippers.  
 - Some sites may hide shipping times in non-standard pages (not linked with “shipping” or “delivery”).  
 - Regex checks may miss unusual formats (e.g., “within two weeks”).  
+
+## Contributing
+
+This project is very much vibecoded — I’m an amateur developer hacking things together to make life easier.
+If you spot bugs, have ideas for improvements, or want to make the code cleaner, please feel free to:
+-	Fork the repo and submit a pull request
+- Raise an issue with suggestions or problems you find
+
+I’m happy to review and merge changes, and I genuinely welcome feedback from anyone more experienced (or equally vibecoded).
