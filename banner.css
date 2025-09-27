@@ -1,0 +1,16 @@
+#dropship-warning-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  z-index: 999999;
+  border-bottom: 2px solid orange;
+  font-family: Arial, sans-serif;
+}
+body {
+  margin-top: 50px !important;
+}
