@@ -8,7 +8,8 @@ It detects possible dropshipping sites by analyzing their shipping or delivery p
 - Displays a warning banner at the top of the page.  
 - Crawls the **Shipping** or **Delivery** policy page (if available).  
 - Highlights estimated delivery times:
-  - ✅ **≤ 7 days** → Likely ships from **Australia** (Green banner).  
+  - ✅ **≤ 7 days** → Likely ships from **Australia** (Green banner). 
+  ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example2.png "Example of a likely AU based shipper")
   - ⚠️ **7–20 days** → Likely dropshipped from **China** (Yellow banner).  
   - ⚠️ **Other ranges** → Treated as possible international shipping (Orange banner).  
 
