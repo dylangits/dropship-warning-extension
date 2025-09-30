@@ -79,11 +79,17 @@
     details.style.cssText = "line-height: 1.6; font-family: Arial, sans-serif;";
 
     const reason = document.createElement("p");
-    reason.innerHTML = "<strong>Found:</strong> " + evidence.found;
+    const foundLabel = document.createElement("strong");
+    foundLabel.textContent = "Found: ";
+    reason.appendChild(foundLabel);
+    reason.appendChild(document.createTextNode(evidence.found));
     reason.style.cssText = "margin-bottom: 10px; font-family: Arial, sans-serif; font-size: 14px; color: black; line-height: 1.6;";
 
     const explanation = document.createElement("p");
-    explanation.innerHTML = "<strong>Why this matters:</strong> " + evidence.explanation;
+    const whyLabel = document.createElement("strong");
+    whyLabel.textContent = "Why this matters: ";
+    explanation.appendChild(whyLabel);
+    explanation.appendChild(document.createTextNode(evidence.explanation));
     explanation.style.cssText = "margin-bottom: 15px; font-family: Arial, sans-serif; font-size: 14px; color: black; line-height: 1.6;";
 
     details.appendChild(reason);
