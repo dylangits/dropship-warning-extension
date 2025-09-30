@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Microsoft Edge browser extension (Manifest V3) that detects Shopify-based dropshipping sites by analyzing their shipping policies. It displays warning banners to users based on estimated delivery times.
+This is a Microsoft Edge browser extension (Manifest V3) that detects Shopify-based dropshipping sites by analyzing their shipping policies. It displays interactive warning banners to users based on phrase detection and estimated delivery times, with detailed explanations available on demand.
 
 ## Architecture
 
@@ -14,30 +14,74 @@ This is a Microsoft Edge browser extension (Manifest V3) that detects Shopify-ba
 - **[content.js](content.js)** - Main detection logic that runs as a content script on every page
 - **[banner.css](banner.css)** - Styles for the fixed-position warning banner
 
-### Detection Flow
+### Detection Flow (Hybrid Strategy)
 
-1. **Shopify Detection** ([content.js:25-28](content.js#L25-L28))
+1. **Shopify Detection** ([content.js:138-141](content.js#L138-L141))
    - Checks for `meta[name='shopify-digital-wallet']` or `window.Shopify`
    - Exits early if not a Shopify site
 
-2. **Initial Warning** ([content.js:32-34](content.js#L32-L34))
-   - Displays default yellow warning banner immediately on Shopify sites
+2. **Strategy 1: Current Page Analysis** ([content.js:493-499](content.js#L493-L499))
+   - If already on a shipping/delivery policy page (URL contains "shipping", "delivery", or "ship")
+   - Immediately analyzes visible page text via `document.body.innerText`
+   - Avoids CORS issues by not fetching external content
 
-3. **Shipping Policy Analysis** ([content.js:37-92](content.js#L37-L92))
-   - Searches all `<a>` tags for links containing "shipping" or "delivery"
-   - Fetches the policy page via `fetch()`
-   - Parses HTML content for day ranges using regex patterns
+3. **Strategy 2: Fetch & Analyze** ([content.js:506-521](content.js#L506-L521))
+   - Shows default warning banner on product pages
+   - Finds shipping/delivery policy links
+   - Fetches policy page via `fetch()` (may fail due to CORS)
+   - Analyzes fetched HTML content
 
-4. **Banner Updates** ([content.js:2-22](content.js#L2-L22))
-   - Green banner (≤7 days) = likely Australia-based shipping
-   - Yellow banner (7-20 days) = likely China dropshipping
-   - Orange banner (other ranges) = international shipping
+### Detection Methods (Priority Order)
 
-### Key Patterns
+The `analyzeShippingText()` function ([content.js:152-491](content.js#L152-L491)) checks in this order:
 
-- **7-20 Day Detection** ([content.js:48](content.js#L48)): Uses regex `/\b7\s*[-–]\s*20\s*(business\s*)?days/`
-- **Generic Day Range** ([content.js:57](content.js#L57)): Fallback pattern `(\d{1,2})\s*[-–]\s*(\d{1,2})\s*days`
-- **Banner Singleton** ([content.js:3](content.js#L3)): Uses `getElementById` to prevent duplicate banners
+1. **High-Confidence Dropshipping Phrases** ([content.js:157-218](content.js#L157-L218))
+   - Ships from China/Guangzhou/Shenzhen/overseas
+   - China Post, ePacket, Yanwen
+   - International warehouse
+   - Fulfillment partner / third-party fulfillment
+   - Processing time disclaimers
+   - "Please allow 2-4 weeks"
+   - Customs delay disclaimers
+   - Tracking update warnings
+
+2. **Australian/Local Shipping Indicators** ([content.js:221-262](content.js#L221-L262))
+   - Ships from Sydney/Melbourne/Brisbane/Perth/Adelaide/Australia
+   - Australia Post / AusPost
+   - Australian stock / local stock
+   - Same-day dispatch
+   - Express post available
+
+3. **Time-Based Patterns** ([content.js:264-489](content.js#L264-L489))
+   - 7-20 days (specific pattern)
+   - "7 to 20 days" variant
+   - Week ranges (converted to days)
+   - "Up to X days"
+   - "Between X and Y days"
+   - Generic day ranges (fallback)
+
+### Banner Colors & Meanings
+
+- **Green** (`lightgreen`) - Local Australian stock detected (≤7 days or AU indicators)
+- **Yellow** (`yellow`) - Likely dropshipped from China (7-20 days or China indicators)
+- **Orange** (`orange`) - International shipping (>20 days)
+
+### User Interface
+
+**Banner Components** ([content.js:4-51](content.js#L4-L51)):
+- Message text
+- "Tell me why" button (appears when evidence is available)
+- "✕" hide/dismiss button (always visible)
+
+**Evidence Modal** ([content.js:53-105](content.js#L53-L105)):
+- Shows exact matched text (e.g., "ships from china")
+- Explains why it's an indicator
+- Links to source URL (shipping policy page)
+- Click outside or ✕ to close
+
+### CSS Isolation
+
+All UI elements use `cssText` with explicit styles ([content.js:35](content.js#L35), [content.js:44](content.js#L44), [content.js:49](content.js#L49)) to prevent CSS inheritance from host websites. This ensures consistent appearance across all sites.
 
 ## Development
 
@@ -49,17 +93,32 @@ Load the extension in Edge:
 3. Click "Load unpacked"
 4. Select this directory
 
-Test on Shopify sites with known shipping policies to verify banner colors and messages.
+**Test scenarios:**
+- Product pages with shipping links (tests fetch strategy)
+- Direct shipping policy pages (tests current-page strategy)
+- Sites with phrase indicators (e.g., "ships from China", "Australia Post")
+- Various time formats ("7-20 days", "1-2 weeks", "up to 14 days")
 
 ### Key Constraints
 
 - Content scripts run at `document_idle` to ensure DOM is ready
-- Banner uses `z-index: 999999` and `position: fixed` to overlay all content
+- Banner uses `z-index: 999999` (modal: `9999999`) to overlay all content
 - Body gets `margin-top: 50px !important` to prevent content overlap
 - Fetch requests may fail due to CORS - errors are caught and logged to console
+- All UI elements use isolated CSS to prevent inheritance
 
-## Limitations
+### Known Limitations
 
-- Regex patterns may not catch all shipping time formats (e.g., "within two weeks")
-- Some sites hide shipping info on non-standard pages without "shipping" or "delivery" in the URL
-- Extension displays warnings on ALL Shopify sites, not just dropshippers
+- **False positives:** Removed 4PX detection (matched CSS "4px" instead of courier)
+- **CORS blocking:** Fetch strategy fails on some sites - current-page strategy mitigates this
+- **Regex limitations:** May miss unusual phrasing (e.g., "within a fortnight")
+- **All Shopify sites:** Extension shows warnings on ALL Shopify sites, not just dropshippers
+
+## Code Patterns to Follow
+
+When adding new detection patterns:
+1. Add regex + explanation to appropriate array in `analyzeShippingText()`
+2. Use `normalized.match()` to capture matched text for evidence
+3. Pass evidence object to `createBanner()`: `{found: string, explanation: string, url: string}`
+4. Test for false positives on normal e-commerce sites
+5. Place high-confidence patterns earlier in detection order

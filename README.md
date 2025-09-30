@@ -1,19 +1,43 @@
 # Dropshipping Warning Extension
 
-A simple Microsoft Edge extension that warns users when visiting a Shopify website.  
-It detects possible dropshipping sites by analyzing their shipping or delivery policy, written by ChatGPT in a pinch to help my elderly parents detect a dropshipping site because I got tired of the 'educate > ignore > complain' cycle
+A Microsoft Edge browser extension that helps users identify dropshipping sites on Shopify by analyzing shipping policies and delivery indicators. Originally created to help my elderly parents avoid the 'educate > ignore > complain' cycle with dropshipped products.
 
 ## Features
-- Detects if a website is running on Shopify.  
-- Displays a warning banner at the top of the page by default
+
+### Smart Detection
+- **Shopify Site Detection** - Automatically identifies Shopify-powered stores
+- **Phrase-Based Detection** - Identifies high-confidence dropshipping indicators:
+  - "Ships from China/Guangzhou/Shenzhen"
+  - Chinese couriers (China Post, ePacket, Yanwen)
+  - "International warehouse" or "fulfillment partner"
+  - Processing time disclaimers
+  - Customs delay warnings
+- **Australian Stock Detection** - Identifies local businesses:
+  - "Ships from Sydney/Melbourne/Brisbane" etc.
+  - Australia Post / AusPost mentions
+  - "Local stock" or "same-day dispatch"
+- **Time-Based Analysis** - Analyzes delivery estimates:
+  - ✅ **≤ 7 days** → Likely ships from **Australia** (Green banner)
+  - ⚠️ **7–20 days** → Likely dropshipped from **China** (Yellow banner)
+  - ⚠️ **>20 days** → International shipping (Orange banner)
+  - Supports multiple formats: "7-20 days", "1-2 weeks", "up to 14 days", "between 5 and 10 days"
+
+### Interactive UI
+- **Warning Banner** - Fixed top banner with color-coded alerts
 ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example3.png "Example of default banner")
-- Crawls the **Shipping** or **Delivery** policy page (if available).  
-- Highlights estimated delivery times:
-  - ✅ **≤ 7 days** → Likely ships from **Australia** (Green banner). 
-  ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example2.png "Example of a likely AU based shipper")
-  - ⚠️ **7–20 days** → Likely dropshipped from **China** (Yellow banner).  
-  ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example1.png "Example of a likely CN based shipper")
-  - ⚠️ **Other ranges** → Treated as possible international shipping (Orange banner).  
+- **"Tell Me Why" Button** - Click to see detailed evidence:
+  - Exact phrase/pattern detected
+  - Explanation of why it's a dropshipping indicator
+  - Link to the shipping policy page
+- **Hide Button (×)** - Dismiss the banner if desired
+
+### Example Detections
+
+**Australian Stock Detection (Green):**
+![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example2.png "Example of a likely AU based shipper")
+
+**Dropshipping Detection (Yellow):**
+![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example1.png "Example of a likely CN based shipper")  
 
 ## Installation (Edge)
 1. Download this repository or ZIP file.  
@@ -25,16 +49,30 @@ It detects possible dropshipping sites by analyzing their shipping or delivery p
 4. Click **Load unpacked**.  
 5. Select the folder containing the extension (`manifest.json`, `content.js`, `banner.css`, `README.md`).  
 
+## How It Works
+
+The extension uses a hybrid detection strategy:
+
+1. **Current Page Analysis** - If you're already on a shipping/delivery policy page, it analyzes the visible text immediately
+2. **Fetch & Analyze** - On product pages, it finds and fetches the shipping policy page to analyze
+3. **Priority Detection** - Checks in order:
+   - High-confidence dropshipping phrases (e.g., "ships from China")
+   - Australian/local stock indicators (e.g., "Australia Post")
+   - Time-based patterns (e.g., "7-20 days")
+
+All styling is isolated using inline CSS to ensure the banner looks consistent across all websites.
+
 ## File Overview
-- `manifest.json` → Extension manifest (declares permissions and content scripts).  
-- `content.js` → Main logic (detects Shopify, fetches shipping/delivery policy, sets banner).  
-- `banner.css` → Styling for the warning banner.  
-- `README.md` → This documentation.  
+- `manifest.json` → Extension manifest (declares permissions and content scripts)
+- `content.js` → Main detection logic with phrase/pattern matching
+- `banner.css` → Base styling for the warning banner
+- `CLAUDE.md` → Technical documentation for developers
 
 ## Limitations
-- Not all Shopify stores are dropshippers.  
-- Some sites may hide shipping times in non-standard pages (not linked with “shipping” or “delivery”).  
-- Regex checks may miss unusual formats (e.g., “within two weeks”).  
+- **Not all Shopify stores are dropshippers** - The extension shows warnings on all Shopify sites to encourage checking
+- **False positives possible** - Local businesses may have longer shipping times
+- **CORS restrictions** - Some sites block cross-origin fetching of shipping policies (mitigated by current-page analysis)
+- **Regex limitations** - May miss unusual phrasing like "within a fortnight"  
 
 ## Contributing
 
