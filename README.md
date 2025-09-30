@@ -25,19 +25,23 @@ A Microsoft Edge browser extension that helps users identify dropshipping sites 
 ### Interactive UI
 - **Warning Banner** - Fixed top banner with color-coded alerts
 ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example3.png "Example of default banner")
+
+
+### Example Detections
 - **"Tell Me Why" Button** - Click to see detailed evidence:
   - Exact phrase/pattern detected
   - Explanation of why it's a dropshipping indicator
   - Link to the shipping policy page
 - **Hide Button (×)** - Dismiss the banner if desired
 
-### Example Detections
-
 **Australian Stock Detection (Green):**
 ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example2.png "Example of a likely AU based shipper")
 
+![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example2a.png "Example of detection method")
+
 **Dropshipping Detection (Yellow):**
 ![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example1.png "Example of a likely CN based shipper")  
+![alt text](https://github.com/dylangits/dropship-warning-extension/blob/main/examples/example1a.png "Example of detection method")  
 
 ## Installation (Edge)
 1. Download this repository or ZIP file.  
