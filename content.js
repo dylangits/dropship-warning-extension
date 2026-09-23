@@ -187,7 +187,7 @@
       const match = normalized.match(phrase.regex);
       if (match) {
         createBanner(
-          "⚠️ WARNING: Strong indicators this is dropshipped from China",
+          "⚠️ Possible dropshipping: shipping policy language commonly associated with overseas (often Chinese) fulfillment",
           "yellow",
           {
             found: match[0],
@@ -231,7 +231,7 @@
       const match = normalized.match(phrase.regex);
       if (match) {
         createBanner(
-          "✅ Ships from Australia - Local stock detected",
+          "✅ Local stock indicators found - appears to ship from Australia",
           "lightgreen",
           {
             found: match[0],
@@ -247,7 +247,7 @@
     const sevenToTwentyMatch = normalized.match(/\b7\s*[-–]\s*20\s*(business\s*)?days/);
     if (sevenToTwentyMatch) {
       createBanner(
-        "⚠️ Shipping policy shows 7–20 days. This product is likely dropshipped from China",
+        "⚠️ Shipping policy shows 7–20 days - a range commonly seen with dropshipping from China. Worth double-checking.",
         "yellow",
         {
           found: sevenToTwentyMatch[0],
@@ -262,7 +262,7 @@
     const sevenToTwentyAltMatch = normalized.match(/\b7\s+to\s+20\s*(business\s*)?days/);
     if (sevenToTwentyAltMatch) {
       createBanner(
-        "⚠️ Shipping policy shows 7 to 20 days. This product is likely dropshipped from China",
+        "⚠️ Shipping policy shows 7 to 20 days - a range commonly seen with dropshipping from China. Worth double-checking.",
         "yellow",
         {
           found: sevenToTwentyAltMatch[0],
@@ -291,7 +291,7 @@
             minDays +
             "-" +
             maxDays +
-            " days). This product likely ships from Australia.",
+            " days). This product appears to ship from Australia.",
           "lightgreen",
           {
             found: weekMatch[0],
@@ -309,11 +309,11 @@
             minDays +
             "-" +
             maxDays +
-            " days). This product likely ships from China",
+            " days). This product may be dropshipped from China",
           "yellow",
           {
             found: weekMatch[0],
-            explanation: "Delivery times over 1 week are typical for dropshipped products from China.",
+            explanation: "Delivery times over 1 week are commonly seen with dropshipped products from China.",
             url: sourceUrl
           }
         );
@@ -329,7 +329,7 @@
         createBanner(
           "✅ Shipping policy shows up to " +
             days +
-            " days. This product likely ships from Australia.",
+            " days. This product appears to ship from Australia.",
           "lightgreen",
           {
             found: upToMatch[0],
@@ -377,7 +377,7 @@
             min +
             "-" +
             max +
-            " days. This product likely ships from Australia.",
+            " days. This product appears to ship from Australia.",
           "lightgreen",
           {
             found: betweenMatch[0],
@@ -391,7 +391,7 @@
             min +
             "-" +
             max +
-            " days. This product likely ships from China",
+            " days. This product may be dropshipped from China",
           "yellow",
           {
             found: betweenMatch[0],
@@ -429,7 +429,7 @@
             min +
             "-" +
             max +
-            " days. This product likely ships from Australia.",
+            " days. This product appears to ship from Australia.",
           "lightgreen",
           {
             found: dayMatch[0],
@@ -443,7 +443,7 @@
             min +
             "-" +
             max +
-            " days. This product likely ships from China",
+            " days. This product may be dropshipped from China",
           "yellow",
           {
             found: dayMatch[0],
@@ -482,7 +482,7 @@
 
   // Default banner (shown on product pages)
   createBanner(
-    "⚠️ WARNING: This may be a dropshipping site - Confirm shipping policy"
+    "⚠️ Heads up: check this site's shipping policy before buying - dropshipping isn't confirmed yet"
   );
 
   // Strategy 2: Find and fetch shipping/delivery policy links
